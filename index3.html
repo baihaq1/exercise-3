@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.css">
+</head>
+<body>
+    <table id="tabeldata" class="display" width="100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Rotation Period</th>
+                <th>Orbital Period</th>
+                <th>Diameter</th>
+                <th>Climate</th>
+                <th>Gravity</th>
+                <th>Terrain</th>
+                <th>Surface Water</th>
+                <th>Population</th>
+                <th>Residents</th>
+                <th>Films</th>
+                <th>Created</th>
+                <th>Edited</th>
+                <th>Url</th>
+            </tr>
+        </thead>
+    </table>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
+    <script>
+        $.getJSON('https://swapi.co/api/planets/', function(data) {
+            $('#tabeldata').DataTable({
+            "data": data.results,
+            "pagination" : true,
+            "processing" : true,
+            "filter" : true,
+            "columns" : [
+                { "data" : "name"},
+                { "data" : "rotation_period"},
+                { "data" : "orbital_period"},
+                { "data" : "diameter"},
+                { "data" : "climate"},
+                { "data" : "gravity"},
+                { "data" : "terrain"},
+                { "data" : "surface_water"},
+                { "data" : "population"},
+                { "data" : "residents",
+                    "render": function ( data, type, row, meta ) {
+                    return '<a href="'+data+'">Download</a>';
+                }},
+                { "data" : "films"},
+                { "data" : "created"},
+                { "data" : "edited"},
+                { "data" : "url"}
+            ]
+            });
+            
+        });
+    </script>
+</body>
+</html>
