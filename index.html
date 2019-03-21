@@ -1,103 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title></title>
-
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Excercise 3</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-
-    <h1>jQuery.ajax()</h1>
-        <div id="display-resources">
-            <p>jQuery example using <a href="http://api.jquery.com/jquery.ajax/">jQuery.ajax()</a> to retrieve a list of
-                JavaScript Training Resources.</p>
-        </div>
-        <a href="#" class="btn btn-primary" id="retrieve-resources">Retrieve List</a>
-
+    <table id="tabeldata" class="display" width="100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Rotation Period</th>
+                <th>Orbital Period</th>
+                <th>Diameter</th>
+                <th>Climate</th>
+                <th>Gravity</th>
+                <th>Terrain</th>
+                <th>Surface Water</th>
+                <th>Population</th>
+                <th>Residents</th>
+                <th>Films</th>
+                <th>Created</th>
+                <th>Edited</th>
+                <th>Url</th>
+            </tr>
+        </thead>
+    </table>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
+    <script>
+        $.getJSON('https://swapi.co/api/planets/', function(data) {
+            $('#tabeldata').DataTable({
+            "data": data.results,
+            "pagination" : true,
+            "processing" : true,
+            "filter" : true,
+            "columns" : [
+                { "data" : "name"},
+                { "data" : "rotation_period"},
+                { "data" : "orbital_period"},
+                { "data" : "diameter"},
+                { "data" : "climate"},
+                { "data" : "gravity"},
+                { "data" : "terrain"},
+                { "data" : "surface_water"},
+                { "data" : "population"},
+                { "data" : "residents",
+                  "render": function ( data, type, row, meta ) {
+                    var src = ""
+                    for (var i = 0; i < data.length; i++) {
+                      src += '<a href="#" onclick="modalResident(\'' + data[i] + '\')">People '+ i+1 +'</a>,</br>'
+                    }
+                    return src;
+                }},
+                { "data" : "films",
+                  "render": function ( data, type, row, meta ) {
+                    var flm = ""
+                    for (var i = 0; i < data.length; i++) {
+                      flm += '<a href="#" onclick="modalFilms(\'' + data[i] + '\')">Films '+ i+1 +'</a>,</br>'
+                    }
+                    return flm;
+                }},
+                // { "data" : "films"},
+                { "data" : "created" },
+                { "data" : "edited"},
+                { "data" : "url"}
+            ]
+            });
 
-  // $.getJSON('https://swapi.co/api/planets/', function(data) {
-  //   console.log(data['results']);
-  //
-  //
-  // });
+        });
 
+        function modalResident(link) {
 
-var no = 1
-      $(document).ready(function() {
-    $("#retrieve-resources").click(function() {
-      var displayResources = $("#display-resources");
-
-      displayResources.text("Loading data from JSON source...");
-
-      $.ajax({
-        type: "GET",
-        url: "https://swapi.co/api/planets/", // Using our resources.json file to serve results
-        success: function(result) {
-          // console.log(result);
-          var output = "<table><thead><tr><th>No.</th><th>Name Planets</th><th>Population</th><th>Rotation Period<th>Orbital Period</th>"
-            + "<th>Diameter</th><th>Climate</th><th>Gravity</th><th>Terrain</th><th>Surface Water</th><th>Residents</th><th>Films</th>"
-            + "<th>Created</th><th>Edited</th><th>URL</th></tr>"
-            + "</thead><tbody>";
-          for (var i in result.results) {
-            output +=
-              "<tr><td>"+ no +
-              "</td><td>" +
-              result.results[i].name +
-              "</td><td>" +
-              result.results[i].population +
-              "</td><td>" +
-              result.results[i].rotation_period +
-              "</td><td>" +
-              result.results[i].orbital_period +
-              "</td><td>";
-              result.results[i].diameter +
-              "</td><td>";
-              result.results[i].climate +
-              "</td><td>";
-              result.results[i].gravity +
-              "</td><td>";
-              result.results[i].terrain +
-              "</td><td>";
-              result.results[i].surface_water +
-              "</td><td>";
-              result.results[i].residents +
-              "</td><td>";
-              result.results[i].films +
-              "</td><td>";
-              result.results[i].created +
-              "</td><td>";
-              result.results[i].edited +
-              "</td><td>";
-              result.results[i].url +
-              "</td></tr>";
-
-              no++
+          $.ajax({
+            type: "GET",
+            url: link, // Using our resources.json file to serve results
+            success: function(result) {
+              document.getElementById("h6nama").innerText = result.name
+              document.getElementById("h6height").innerText = result.height
+              document.getElementById("h6mass").innerText = result.mass
+              document.getElementById("h6hair").innerText = result.hair_color
+              document.getElementById("h6skin").innerText = result.skin_color
+              document.getElementById("h6eye").innerText = result.eye_color
+              document.getElementById("h6birth").innerText = result.birth_year
+              document.getElementById("h6gender").innerText = result.gender
+              document.getElementById("h6homeworld").innerText = result.homeworld
+              document.getElementById("h6species").innerText = result.species
+              document.getElementById("h6vehicles").innerText = result.vehicles
+              document.getElementById("h6created").innerText = result.created
+              document.getElementById("h6edited").innerText = result.edited
+              document.getElementById("h6url").innerText = result.url
+              }
+            });
+            $('#table_modal').modal('show');
           }
-          output += "</tbody></table>";
 
-          displayResources.html(output);
-          $("table").addClass("table");
-        }
-      });
-    });
-  });
+          function modalFilms(link) {
+            $.ajax({
+              type: "GET",
+              url: link, // Using our resources.json file to serve results
+              success: function(result) {
+                document.getElementById("h6title").innerText = result.title
+                document.getElementById("h6opening_crawl").innerText = result.opening_crawl
+                document.getElementById("h6director").innerText = result.director
+                document.getElementById("h6producer").innerText = result.producer
+                document.getElementById("h6release_date").innerText = result.release_date
+
+                }
+              });
+              $('#table_modal_film').modal('show');
+            }
     </script>
-  </body>
+                <!-- <a data-toggle='modal' role='button' href='#table_modal'>text
+                </a> -->
+
+        <div id='table_modal' class='modal fade text-left' tabindex='-1' role='dialog'>
+          <div class='modal-dialog'>
+              <div class='modal-content'>
+                <div class='modal-header'>
+                  <h4 class='modal-title'> RESIDENTS </h4>
+                  <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+                </div>
+              <div class='modal-body with-padding'>
+                  <table class='table table-hover'>
+                    <tr>
+                      <td>
+                        <h6>Name : </h6>
+                      </td>
+                      <td class='text-right'>
+                        <h6 id="h6nama"></h6>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><h6>height</h6></td>
+                      <td class='text-right'><h6 id="h6height"></h6></td>
+                    </tr>
+                    <tr>
+                      <td><h6>mass</h6></td>
+                        <td class='text-right'><h6 id="h6mass"></h6></td>
+                    </tr>
+                    <tr>
+                      <td><h6>hair_color</h6></td>
+                        <td class='text-right'><h6 id="h6hair"></h6></td>
+                    </tr>
+                    <tr>
+                      <td><h6>skin_color</h6></td>
+                        <td class='text-right'><h6 id="h6skin"></h6></td>
+                    </tr>
+                    <tr>
+                      <td><h6>eye_color</h6></td>
+                        <td class='text-right'><h6 id="h6eye"></h6></td>
+                    </tr>
+                    <tr>
+                      <td><h6>birth_year</h6></td>
+                        <td class='text-right'><h6 id="h6birth"></h6></td>
+                    </tr>
+                    <tr>
+                      <td><h6>gender</h6></td>
+                        <td class='text-right'><h6 id="h6gender"></h6></td>
+                    </tr>
+                    <tr>
+                      <td><h6>homeworld</h6></td>
+                        <td class='text-right'><h6 id="h6homeworld"></h6></td>
+                    </tr>
+                    <tr>
+                      <td><h6>species</h6></td>
+                        <td class='text-right'><h6 id="h6species"></h6></td>
+                    </tr>
+                    <tr>
+                      <td><h6>vehicles</h6></td>
+                        <td class='text-right'><h6 id="h6vehicles"></h6></td>
+                    </tr>
+                    <tr>
+                      <td><h6>created</h6></td>
+                        <td class='text-right'><h6 id="h6created"></h6></td>
+                    </tr>
+                    <tr>
+                      <td><h6>edited</h6></td>
+                        <td class='text-right'><h6 id="h6edited"></h6></td>
+                    </tr>
+                    <tr>
+                      <td><h6>URL</h6></td>
+                        <td class='text-right'><h6 id="h6url"></h6></td>
+                    </tr>
+                  </table>
+                </div>
+                <div class='modal-footer'>
+                  <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div id='table_modal_film' class='modal fade text-left' tabindex='-1' role='dialog'>
+            <div class='modal-dialog'>
+                <div class='modal-content'>
+                  <div class='modal-header'>
+                    <h4 class='modal-title'> FILM </h4>
+                    <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+                  </div>
+                <div class='modal-body with-padding'>
+                    <table class='table table-hover'>
+                      <tr>
+                        <td>
+                          <h6>Title : </h6>
+                        </td>
+                        <td class='text-right'>
+                          <h6 id="h6title"></h6>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="2"><h6 id="h6opening_crawl"></h6></td>
+                      </tr>
+                      <tr>
+                        <td><h6>director</h6></td>
+                          <td class='text-right'><h6 id="h6director"></h6></td>
+                      </tr>
+                      <tr>
+                        <td><h6>producer</h6></td>
+                          <td class='text-right'><h6 id="h6producer"></h6></td>
+                      </tr>
+                      <tr>
+                        <td><h6>release_date</h6></td>
+                          <td class='text-right'><h6 id="h6release_date"></h6></td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class='modal-footer'>
+                    <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+</body>
 </html>
